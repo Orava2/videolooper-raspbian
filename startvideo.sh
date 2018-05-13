@@ -3,21 +3,23 @@
 # Comments, clean up, improvements by Derek DeMoss, for Dark Horse Comics, Inc. 2015
 # Added USB support, full path, support files with spaces in names, support more file formats - Tim Schwartz, 2016
 
+# Version 0.3.2, fix: filemane 03.jpg is displayed for default delay, not 3 seconds.
 # Version 0.3.1, added html support.
 # Version 0.3.0, added 'pqiv -f -i blank.png&' to open blank image. This hides desktop elements.
 # Version 0.2, added fbi for displaying images
 # Version 1.2, moved updating playing index to the end of the loop. Otherwise playing starts from index 1 instead of 0.
 
+
 declare -A VIDS # make variable VIDS an Array
 
-LOCAL_FILES=/var/www/html/files/ # Local media files folder
-USB_FILES=/mnt/usbdisk/ # USB media files folder
+LOCAL_FILES=/var/www/html/files/ # A variable of this folder
+USB_FILES=/mnt/usbdisk/ # Variable for usb mount point
 CURRENT=0 # Number of videos in the folder
 PLAYING=0 # Video that is currently playing
-VIDEO_FORMATS='mov|mp4|mpg|mkv' # If you want o exclude files rename files eg to video.mp4.x
+VIDEO_FORMATS='mov|mp4|mpg|mkv'
 IMAGE_FORMATS='png|jpg|bmp|gif'
 WEB_FORMATS='html|htm|php'
-DEFAULT_DELAY=15 # Defaul delay for images and html pages
+DEFAULT_DELAY=15 # Defaul delay for images and web pages
 
 getvids () # Since I want this to run in a loop, it should be a function
 {
@@ -55,7 +57,7 @@ cd ${SCRIPT_DIR}
 
 # Open black image to backround.
 pqiv -f -i blank.png&
-sleep 2
+sleep 3
 
 # Kill processes if they have started before running this script.
 pkill -9 "$WEB_SERVICE" # Kill chromium process.
@@ -76,14 +78,14 @@ while true; do # Main loop for displaying videos, images and web pages.
 			FILENAME=${FULL_FILENAME##*/}
 			# Images
 			if echo "${FILENAME##*.}" | grep -Eiq ${IMAGE_FORMATS} > /dev/null; then # grep with -i returns true if formats are found and false if not.
-				DELAY="$(echo "${FILENAME}" | rev | cut -d '.' -f 2 | rev )" # Delay for image is read from filname. image.30.jpg is displayed for 30 seconds.
-				# Check if DELAY is a integer number.			
-				if ! [[ "$DELAY" =~ ^[0-9]+$ ]]
+				DELAY="$(echo "${FILENAME}" | rev | cut -d '.' -f 2 | rev )"
+				# Check if DELAY is an integer number and check if file name contains more than one dot. More than one dot is required so numbers in file names 01.jpg 02.jpg etc is not used as a delay. 
+				if ! ( [[ "$DELAY" =~ ^[0-9]+$ ]] &&  [[ "$(echo "${FILENAME}" | grep -o '\.' | wc -l)" -gt 1 ]] ) #
 				then
         				DELAY=${DEFAULT_DELAY}	# If not number found use default delay.
 				fi
 				echo "Displaying image file ${VIDS[$PLAYING]}"
-				fbi -noverbose -nocomments -T 7 -1 -t ${DELAY}  ${VIDS[$PLAYING]} >/dev/null; # Image is displayed in virtual console 7.
+				fbi -noverbose -nocomments -T 7 -1 -t ${DELAY}  ${VIDS[$PLAYING]} >/dev/null;
 
 			fi
 			# Videos
@@ -95,15 +97,15 @@ while true; do # Main loop for displaying videos, images and web pages.
 			# web pages
 			if echo "${FILENAME##*.}" | grep -Eiq ${WEB_FORMATS} > /dev/null;  then
 				echo "Display web page ${VIDS[$PLAYING]}"
-				DELAY="$(echo "${FILENAME}" | rev | cut -d '.' -f 2 | rev )" # Delay for image is read from filname. weather_and_news.300.html is displayed for 300 seconds.
-				# Check if DELAY is a integer number.			
-				if ! [[ "$DELAY" =~ ^[0-9]+$ ]]
+				DELAY="$(echo "${FILENAME}" | rev | cut -d '.' -f 2 | rev )"
+				# Check if DELAY is an integer number and check if file name contains more than one dot. More than one dot is required so numbers in file names 01.html 02.html etc is not used as a delay. 
+				if ! ( [[ "$DELAY" =~ ^[0-9]+$ ]] &&  [[ "$(echo "${FILENAME}" | grep -o '\.' | wc -l)" -gt 1 ]] ) #
 				then
         				DELAY=${DEFAULT_DELAY}	# If not number found use default delay.
 				fi
 				echo "Opening web page ${VIDS[$PLAYING]}"
 				chromium-browser --no-sandbox --noerrdialogs --disable-session-crashed-bubble --disable-infobars --kiosk --incognito ${VIDS[$PLAYING]} > /dev/null & # Open web page in Chromium by using kiosk mode.
-				sleep ${DELAY} # Wait for defay
+				sleep ${DELAY} 
 				pkill -9 "chromium-browse" # Kill Chromium process.
 			fi			
 
@@ -116,7 +118,7 @@ while true; do # Main loop for displaying videos, images and web pages.
 		fi
 
 	else # if [ $CURRENT -gt 0 ] 
-		echo "Insert USB with videos and restart or add videos to /home/pi/video and run ./startvideo.sh"
+		echo "Insert USB with videos and restart or add videos to ${LOCAL_FILES} and run ./startvideo.sh"
 		sleep 5
 	fi
 
