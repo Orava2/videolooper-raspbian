@@ -16,10 +16,10 @@ LOCAL_FILES=/var/www/html/files/ # A variable of this folder
 USB_FILES=/mnt/usbdisk/ # Variable for usb mount point
 CURRENT=0 # Number of videos in the folder
 PLAYING=0 # Video that is currently playing
-VIDEO_FORMATS='mov|mp4|mpg|mkv'
+VIDEO_FORMATS='mov|mp4|mpg|mkv'  # If you want o exclude files rename files eg to video.mp4.x
 IMAGE_FORMATS='png|jpg|bmp|gif'
 WEB_FORMATS='html|htm|php'
-DEFAULT_DELAY=15 # Defaul delay for images and web pages
+DEFAULT_DELAY=15 # Defaul delay for images and html pages
 
 getvids () # Since I want this to run in a loop, it should be a function
 {
@@ -57,7 +57,7 @@ cd ${SCRIPT_DIR}
 
 # Open black image to backround.
 pqiv -f -i blank.png&
-sleep 3
+sleep 2
 
 # Kill processes if they have started before running this script.
 pkill -9 "$WEB_SERVICE" # Kill chromium process.
@@ -78,14 +78,14 @@ while true; do # Main loop for displaying videos, images and web pages.
 			FILENAME=${FULL_FILENAME##*/}
 			# Images
 			if echo "${FILENAME##*.}" | grep -Eiq ${IMAGE_FORMATS} > /dev/null; then # grep with -i returns true if formats are found and false if not.
-				DELAY="$(echo "${FILENAME}" | rev | cut -d '.' -f 2 | rev )"
+				DELAY="$(echo "${FILENAME}" | rev | cut -d '.' -f 2 | rev )"  # Delay for image is read from filname. image.30.jpg is displayed for 30 seconds.
 				# Check if DELAY is an integer number and check if file name contains more than one dot. More than one dot is required so numbers in file names 01.jpg 02.jpg etc is not used as a delay. 
 				if ! ( [[ "$DELAY" =~ ^[0-9]+$ ]] &&  [[ "$(echo "${FILENAME}" | grep -o '\.' | wc -l)" -gt 1 ]] ) #
 				then
         				DELAY=${DEFAULT_DELAY}	# If not number found use default delay.
 				fi
 				echo "Displaying image file ${VIDS[$PLAYING]}"
-				fbi -noverbose -nocomments -T 7 -1 -t ${DELAY}  ${VIDS[$PLAYING]} >/dev/null;
+				fbi -noverbose -nocomments -T 7 -1 -t ${DELAY}  ${VIDS[$PLAYING]} >/dev/null; # Image is displayed in virtual console 7.
 
 			fi
 			# Videos
@@ -97,7 +97,7 @@ while true; do # Main loop for displaying videos, images and web pages.
 			# web pages
 			if echo "${FILENAME##*.}" | grep -Eiq ${WEB_FORMATS} > /dev/null;  then
 				echo "Display web page ${VIDS[$PLAYING]}"
-				DELAY="$(echo "${FILENAME}" | rev | cut -d '.' -f 2 | rev )"
+				DELAY="$(echo "${FILENAME}" | rev | cut -d '.' -f 2 | rev )" # Delay for html pages is read from filname. weather_and_news.300.html is displayed for 300 seconds.
 				# Check if DELAY is an integer number and check if file name contains more than one dot. More than one dot is required so numbers in file names 01.html 02.html etc is not used as a delay. 
 				if ! ( [[ "$DELAY" =~ ^[0-9]+$ ]] &&  [[ "$(echo "${FILENAME}" | grep -o '\.' | wc -l)" -gt 1 ]] ) #
 				then
@@ -105,7 +105,7 @@ while true; do # Main loop for displaying videos, images and web pages.
 				fi
 				echo "Opening web page ${VIDS[$PLAYING]}"
 				chromium-browser --no-sandbox --noerrdialogs --disable-session-crashed-bubble --disable-infobars --kiosk --incognito ${VIDS[$PLAYING]} > /dev/null & # Open web page in Chromium by using kiosk mode.
-				sleep ${DELAY} 
+				sleep ${DELAY} # Wait for defay
 				pkill -9 "chromium-browse" # Kill Chromium process.
 			fi			
 
