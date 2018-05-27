@@ -7,7 +7,7 @@
 # Version 0.3.1, added html support.
 # Version 0.3.0, added 'pqiv -f -i blank.png&' to open blank image. This hides desktop elements.
 # Version 0.2, added fbi for displaying images
-# Version 1.2, moved updating playing index to the end of the loop. Otherwise playing starts from index 1 instead of 0.
+# Version 0.1, moved updating playing index to the end of the loop. Otherwise playing starts from index 1 instead of 0.
 
 
 declare -A VIDS # make variable VIDS an Array
