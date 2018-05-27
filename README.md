@@ -1,4 +1,4 @@
-# Update
+# Update (Orava2)
 1: Added support for images. Program called fbi displays images. Duration for images is gevin in file name. For example nature_photo.20.jpg is displayed for 20 seconds.
 
 2: Added html support. Htm, html and php files are opened in Chromium. Duration for web page is is given in file name. Forexample web_page.300.html is displayed 300 seconds.
