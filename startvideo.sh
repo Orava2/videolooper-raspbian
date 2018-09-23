@@ -3,6 +3,7 @@
 # Comments, clean up, improvements by Derek DeMoss, for Dark Horse Comics, Inc. 2015
 # Added USB support, full path, support files with spaces in names, support more file formats - Tim Schwartz, 2016
 
+# Version 0.3.3
 # Version 0.3.2, fix: filemane 03.jpg is displayed for default delay, not 3 seconds.
 # Version 0.3.1, added html support.
 # Version 0.3.0, added 'pqiv -f -i blank.png&' to open blank image. This hides desktop elements.
@@ -55,14 +56,16 @@ WEB_SERVICE='chromium-browse' # In process list last r character is not displaye
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd ${SCRIPT_DIR}
 
-# Open black image to backround.
-pqiv -f -i blank.png&
-sleep 2
-
 # Kill processes if they have started before running this script.
 pkill -9 "$WEB_SERVICE" # Kill chromium process.
 pkill -9 "$IMG_SERVICE" # Kill omxplayer process.
 pkill -9 "$VID_SERVICE" # Kill fbi process.
+pkill -9 "pqiv" # Kill pqiv process.
+sleep 2
+
+# Open black image to backround.
+pqiv -f -i blank.png&
+sleep 2
 
 while true; do # Main loop for displaying videos, images and web pages.
 	getvids # Get a list of the current videos in the folder
@@ -91,7 +94,7 @@ while true; do # Main loop for displaying videos, images and web pages.
 			# Videos
 			if echo "${FILENAME##*.}" | grep -Eiq ${VIDEO_FORMATS} > /dev/null;  then
 				echo "Playing video file ${VIDS[$PLAYING]}"
-				omxplayer -r -b -o hdmi ${VIDS[$PLAYING]} > /dev/null # Play video
+				omxplayer -r -o hdmi ${VIDS[$PLAYING]} > /dev/null # Play video
 
 			fi
 			# web pages
@@ -106,7 +109,7 @@ while true; do # Main loop for displaying videos, images and web pages.
 				echo "Opening web page ${VIDS[$PLAYING]}"
 				chromium-browser --no-sandbox --noerrdialogs --disable-session-crashed-bubble --disable-infobars --kiosk --incognito ${VIDS[$PLAYING]} > /dev/null & # Open web page in Chromium by using kiosk mode.
 				sleep ${DELAY} # Wait for defay
-				pkill -9 "chromium-browse" # Kill Chromium process.
+				pkill -9 "$WEB_SERVICE" # Kill Chromium process.
 			fi			
 
 		fi
