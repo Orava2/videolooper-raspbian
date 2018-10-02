@@ -3,7 +3,7 @@
 # Comments, clean up, improvements by Derek DeMoss, for Dark Horse Comics, Inc. 2015
 # Added USB support, full path, support files with spaces in names, support more file formats - Tim Schwartz, 2016
 
-# Version 0.3.3
+# Version 0.3.3, fix: removed -r parameter from omxplayer.
 # Version 0.3.2, fix: filemane 03.jpg is displayed for default delay, not 3 seconds.
 # Version 0.3.1, added html support.
 # Version 0.3.0, added 'pqiv -f -i blank.png&' to open blank image. This hides desktop elements.
@@ -94,7 +94,8 @@ while true; do # Main loop for displaying videos, images and web pages.
 			# Videos
 			if echo "${FILENAME##*.}" | grep -Eiq ${VIDEO_FORMATS} > /dev/null;  then
 				echo "Playing video file ${VIDS[$PLAYING]}"
-				omxplayer -r -o hdmi ${VIDS[$PLAYING]} > /dev/null # Play video
+				omxplayer -o hdmi ${VIDS[$PLAYING]} > /dev/null # Play video
+				#xrefresh -display :0 
 
 			fi
 			# web pages
@@ -107,7 +108,7 @@ while true; do # Main loop for displaying videos, images and web pages.
         				DELAY=${DEFAULT_DELAY}	# If not number found use default delay.
 				fi
 				echo "Opening web page ${VIDS[$PLAYING]}"
-				chromium-browser --no-sandbox --noerrdialogs --disable-session-crashed-bubble --disable-infobars --kiosk --incognito ${VIDS[$PLAYING]} > /dev/null & # Open web page in Chromium by using kiosk mode.
+				DISPLAY=:0 chromium-browser --no-sandbox --noerrdialogs --disable-session-crashed-bubble --disable-infobars --kiosk --incognito ${VIDS[$PLAYING]} > /dev/null & # Open web page in Chromium by using kiosk mode.
 				sleep ${DELAY} # Wait for defay
 				pkill -9 "$WEB_SERVICE" # Kill Chromium process.
 			fi			
