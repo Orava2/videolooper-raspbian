@@ -3,6 +3,7 @@
 # Comments, clean up, improvements by Derek DeMoss, for Dark Horse Comics, Inc. 2015
 # Added USB support, full path, support files with spaces in names, support more file formats - Tim Schwartz, 2016
 
+# Version 0.3.4, remember position of PLAYING index after, added subtitles.
 # Version 0.3.3, fix: removed -r parameter from omxplayer.
 # Version 0.3.2, fix: filemane 03.jpg is displayed for default delay, not 3 seconds.
 # Version 0.3.1, added html support.
@@ -15,12 +16,17 @@ declare -A VIDS # make variable VIDS an Array
 
 LOCAL_FILES=/var/www/html/files/ # A variable of this folder
 USB_FILES=/mnt/usbdisk/ # Variable for usb mount point
-CURRENT=0 # Number of videos in the folder
-PLAYING=0 # Video that is currently playing
 VIDEO_FORMATS='mov|mp4|mpg|mkv'  # If you want o exclude files rename files eg to video.mp4.x
 IMAGE_FORMATS='png|jpg|bmp|gif'
 WEB_FORMATS='html|htm|php'
 DEFAULT_DELAY=15 # Defaul delay for images and html pages
+
+CURRENT=0 # Number of videos in the folder
+PLAYING=0 # Video that is currently playing
+# remember position of PLAYING index after restart
+BLKID=`blkid -s PARTUUID -o value /dev/sda1`
+[ -f /var/tmp/play_${BLKID} ] && PLAYING=`cat /var/tmp/play_${BLKID}`
+
 
 getvids () # Since I want this to run in a loop, it should be a function
 {
@@ -94,7 +100,7 @@ while true; do # Main loop for displaying videos, images and web pages.
 			# Videos
 			if echo "${FILENAME##*.}" | grep -Eiq ${VIDEO_FORMATS} > /dev/null;  then
 				echo "Playing video file ${VIDS[$PLAYING]}"
-				omxplayer -o hdmi ${VIDS[$PLAYING]} > /dev/null # Play video
+				omxplayer -o hdmi -t 0 --align center ${VIDS[$PLAYING]} > /dev/null # Play video
 				#xrefresh -display :0 
 
 			fi
