@@ -73,16 +73,28 @@ sleep 2
 pqiv -f -i blank.png&
 sleep 2
 
+# Remember position of PLAYING index after restart and check that old restored PLAYING index is not pointing outside of the array.
+BLKID=`blkid -s PARTUUID -o value /dev/sda1`
+[ -f /var/tmp/play_${BLKID} ] && PLAYING=`cat /var/tmp/play_${BLKID}`
+getvids # Get a list of the current videos in the folder
+if [ $PLAYING -ge $CURRENT ] # if PLAYING is greater than or equal to CURRENT
+then
+	PLAYING=0 # Reset to 0 so we play the "first" video
+fi
+
+
 while true; do # Main loop for displaying videos, images and web pages.
 	getvids # Get a list of the current videos in the folder
 	while ps ax | grep -v grep | grep -E "$VID_SERVICE|$IMG_SERVICE" > /dev/null; do # Wait untill omxplayer or fbi stops. Search for service, print to null.
 		sleep 0.1
 	done
+	# Save current PLAYING index to a file.
+	echo $(($PLAYING)) > /var/tmp/play_`blkid -s PARTUUID -o value /dev/sda1`
 	
 	if [ $CURRENT -gt 0 ] #only play videos if there are more than one video
 	then
 	 	if [ -f ${VIDS[$PLAYING]} ]; then
-			echo $(($PLAYING + 1)) > /var/tmp/play_`blkid -s PARTUUID -o value /dev/sda1`
+
 			FULL_FILENAME=${VIDS[$PLAYING]}
 			FILENAME=${FULL_FILENAME##*/}
 			# Images
@@ -117,7 +129,7 @@ while true; do # Main loop for displaying videos, images and web pages.
 				DISPLAY=:0 chromium-browser --no-sandbox --noerrdialogs --disable-session-crashed-bubble --disable-infobars --kiosk --incognito ${VIDS[$PLAYING]} > /dev/null & # Open web page in Chromium by using kiosk mode.
 				sleep ${DELAY} # Wait for defay
 				pkill -9 "$WEB_SERVICE" # Kill Chromium process.
-			fi			
+			fi
 
 		fi
 		# Update playing index.
