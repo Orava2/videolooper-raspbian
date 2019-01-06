@@ -82,7 +82,7 @@ while true; do # Main loop for displaying videos, images and web pages.
 	if [ $CURRENT -gt 0 ] #only play videos if there are more than one video
 	then
 	 	if [ -f ${VIDS[$PLAYING]} ]; then
-
+			echo $(($PLAYING + 1)) > /var/tmp/play_`blkid -s PARTUUID -o value /dev/sda1`
 			FULL_FILENAME=${VIDS[$PLAYING]}
 			FILENAME=${FULL_FILENAME##*/}
 			# Images
