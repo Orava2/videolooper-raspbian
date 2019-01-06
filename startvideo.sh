@@ -23,10 +23,6 @@ DEFAULT_DELAY=15 # Defaul delay for images and html pages
 
 CURRENT=0 # Number of videos in the folder
 PLAYING=0 # Video that is currently playing
-# remember position of PLAYING index after restart
-BLKID=`blkid -s PARTUUID -o value /dev/sda1`
-[ -f /var/tmp/play_${BLKID} ] && PLAYING=`cat /var/tmp/play_${BLKID}`
-
 
 getvids () # Since I want this to run in a loop, it should be a function
 {
