@@ -6,7 +6,9 @@
 Notes: Use sudo to run startvideo.sh. Requires omxplayer, pqiv, fbi and chromium.
 
 3: Added auxiliary script WegPageToImage whick can be used to take a screenshots of web pages.
+```
 ./WebPageToImage.sh webpagelist.txt /output/dir/
+```
 
 # Video Looper for Raspbian
 Automatically play and loop fullscreen videos on a Raspberry Pi 2 or 3.
