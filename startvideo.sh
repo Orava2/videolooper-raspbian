@@ -20,6 +20,7 @@ VIDEO_FORMATS='mov|mp4|mpg|mkv'  # If you want o exclude files rename files eg t
 IMAGE_FORMATS='png|jpg|bmp|gif'
 WEB_FORMATS='html|htm|php'
 DEFAULT_DELAY=15 # Defaul delay for images and html pages
+RESTORE_POS=0 # Set to 1 if you want script to remember playing position after restart.
 
 CURRENT=0 # Number of videos in the folder
 PLAYING=0 # Video that is currently playing
@@ -69,10 +70,15 @@ sleep 2
 pqiv -f -i blank.png&
 sleep 2
 
-# Remember position of PLAYING index after restart and check that old restored PLAYING index is not pointing outside of the array.
-BLKID=`blkid -s PARTUUID -o value /dev/sda1`
-[ -f /var/tmp/play_${BLKID} ] && PLAYING=`cat /var/tmp/play_${BLKID}`
+# Remember position of PLAYING index after restart if RESTOR_POR =! 0 
+if [ $RESTORE_POS -ne 0 ]
+then
+	BLKID=`blkid -s PARTUUID -o value /dev/sda1`
+	[ -f /var/tmp/play_${BLKID} ] && PLAYING=`cat /var/tmp/play_${BLKID}`
+fi
+
 getvids # Get a list of the current videos in the folder
+# check that old restored PLAYING index is not pointing outside of the array.
 if [ $PLAYING -ge $CURRENT ] # if PLAYING is greater than or equal to CURRENT
 then
 	PLAYING=0 # Reset to 0 so we play the "first" video
