@@ -1,0 +1,18 @@
+# This is a list of web pages which are converted to images.
+# First parameter is a file name, second is an image format,
+# third is a time for displaying image in seconds and fourth is # a web address.
+# For example
+# Google,png,10,www.google.com
+#
+#Previous example will capture the front page of www.google.com and save
+#it to a file Google.cutycapt.10.png. "cutycapt" is used to differentiate capture images
+#from normal images.
+
+# Allowed image formats are png, jpg, bmp and tif.
+
+Google-file,	png,	10,	https://www.google.com # https:// can be used in URL.
+Facebook,	PNG,	10,	www.facebook.com	
+Ubuntu,		png,	11,	www.ubuntu.com
+
+# Comment two
+Proton, png, 10 , www.protonmail.com 
