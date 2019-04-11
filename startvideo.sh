@@ -3,6 +3,8 @@
 # Comments, clean up, improvements by Derek DeMoss, for Dark Horse Comics, Inc. 2015
 # Added USB support, full path, support files with spaces in names, support more file formats - Tim Schwartz, 2016
 
+# Requires: omxplayer, fbi, pqiv
+
 # Version 0.3.4, remember position of PLAYING index after, added subtitles.
 # Version 0.3.3, fix: removed -r parameter from omxplayer.
 # Version 0.3.2, fix: filemane 03.jpg is displayed for default delay, not 3 seconds.
