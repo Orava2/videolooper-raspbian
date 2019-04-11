@@ -110,7 +110,7 @@ while true; do # Main loop for displaying videos, images and web pages.
         				DELAY=${DEFAULT_DELAY}	# If not number found use default delay.
 				fi
 				echo "Displaying image file ${VIDS[$PLAYING]}"
-				fbi -noverbose -nocomments -T 7 -1 -t ${DELAY}  ${VIDS[$PLAYING]} >/dev/null; # Image is displayed in virtual console 7.
+				fbi -a -noverbose -nocomments -T 7 -1 -t ${DELAY}  ${VIDS[$PLAYING]} >/dev/null; # Image is displayed in virtual console 7.
 
 			fi
 			# Videos
