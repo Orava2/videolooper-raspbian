@@ -97,7 +97,7 @@ function execute(){
     done < "$INPUT_FILE"
 
     # deleting existing files with duration greater than EXPIRES minutes & with string .cutycapt. in it
-    if [ $EXPIRES -qt 0 ]; then
+    if [ "$EXPIRES" -gt "0" ]; then
     	echo "removing files older than $EXPIRES minutes"
     	find "$OUT_DIR" -maxdepth 1 -mmin +${EXPIRES} -type f -name '*.cutycapt.*' -delete
     fi	
