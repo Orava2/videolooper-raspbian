@@ -5,7 +5,7 @@
 
 # Requires: omxplayer, fbi, pqiv
 
-# Version 0.3.4, remember position of PLAYING index after, added subtitles.
+# Version 0.3.4, remember position of PLAYING index after restart, added subtitles.
 # Version 0.3.3, fix: removed -r parameter from omxplayer.
 # Version 0.3.2, fix: filemane 03.jpg is displayed for default delay, not 3 seconds.
 # Version 0.3.1, added html support.
