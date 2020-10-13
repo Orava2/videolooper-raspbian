@@ -5,6 +5,7 @@
 
 # Requires: omxplayer, fbi, pqiv
 
+# Version 0.3.4, new chromium cannot be run as root. variable CHROME_USER sets user which is used to run chromium.
 # Version 0.3.4, remember position of PLAYING index after restart, added subtitles.
 # Version 0.3.3, fix: removed -r parameter from omxplayer.
 # Version 0.3.2, fix: filemane 03.jpg is displayed for default delay, not 3 seconds.
@@ -21,6 +22,7 @@ USB_FILES=/mnt/usbdisk/ # Variable for usb mount point
 VIDEO_FORMATS='mov|mp4|mpg|mkv'  # If you want o exclude files rename files eg to video.mp4.x
 IMAGE_FORMATS='png|jpg|bmp|gif'
 WEB_FORMATS='html|htm|php'
+CHROME_USER=pi
 DEFAULT_DELAY=15 # Defaul delay for images and html pages
 RESTORE_POS=0 # Set to 1 if you want script to remember playing position after restart.
 
@@ -130,7 +132,7 @@ while true; do # Main loop for displaying videos, images and web pages.
         				DELAY=${DEFAULT_DELAY}	# If not number found use default delay.
 				fi
 				echo "Opening web page ${VIDS[$PLAYING]}"
-				DISPLAY=:0 chromium-browser --no-sandbox --noerrdialogs --disable-session-crashed-bubble --disable-infobars --kiosk --incognito ${VIDS[$PLAYING]} > /dev/null & # Open web page in Chromium by using kiosk mode.
+				sudo -H -u $CHROME_USER DISPLAY=:0 chromium-browser --no-sandbox --noerrdialogs --disable-session-crashed-bubble --disable-infobars --kiosk --incognito ${VIDS[$PLAYING]} > /dev/null & # Open web page in Chromium by using kiosk mode.
 				sleep ${DELAY} # Wait for defay
 				pkill -9 "$WEB_SERVICE" # Kill Chromium process.
 			fi
