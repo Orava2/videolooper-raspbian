@@ -132,7 +132,7 @@ while true; do # Main loop for displaying videos, images and web pages.
         				DELAY=${DEFAULT_DELAY}	# If not number found use default delay.
 				fi
 				echo "Opening web page ${VIDS[$PLAYING]}"
-				sudo -H -u $CHROME_USER DISPLAY=:0 chromium-browser --no-sandbox --noerrdialogs --disable-session-crashed-bubble --disable-infobars --kiosk --incognito ${VIDS[$PLAYING]} > /dev/null & # Open web page in Chromium by using kiosk mode.
+				sudo -H -u $CHROME_USER DISPLAY=:0 chromium-browser --noerrdialogs --disable-session-crashed-bubble --disable-infobars --kiosk --incognito ${VIDS[$PLAYING]} > /dev/null & # Open web page in Chromium by using kiosk mode.
 				sleep ${DELAY} # Wait for defay
 				pkill -9 "$WEB_SERVICE" # Kill Chromium process.
 			fi
