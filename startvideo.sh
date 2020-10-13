@@ -22,7 +22,7 @@ USB_FILES=/mnt/usbdisk/ # Variable for usb mount point
 VIDEO_FORMATS='mov|mp4|mpg|mkv'  # If you want o exclude files rename files eg to video.mp4.x
 IMAGE_FORMATS='png|jpg|bmp|gif'
 WEB_FORMATS='html|htm|php'
-CHROME_USER=pi
+CHROME_USER=pi # User which is used to run Chromium browser
 DEFAULT_DELAY=15 # Defaul delay for images and html pages
 RESTORE_POS=0 # Set to 1 if you want script to remember playing position after restart.
 
