@@ -85,6 +85,7 @@ function execute(){
             else
                 cTesting=${url#"https://"}
                 cTesting=${cTesting#"http://"}
+		cTesting=${cTesting%%/*}
                 if nc -z -w 10 $cTesting 80 443 >/dev/null; then
                     echo "processing file-name: " $filename " extension: " $ext " duration: " $dur " url: " $url
                     xvfb-run --server-args="-screen 0, 1920x1080x24" cutycapt --min-width=1920 --min-height=1080 --url="$url" --out="${OUT_DIR}/$filename.cutycapt.$dur.$ext"
