@@ -3,7 +3,7 @@
 
 2: Added html support. Htm, html and php files are opened in Chromium. Duration for web page is is given in file name. Forexample web_page.300.html is displayed 300 seconds.
 
-Notes: Use sudo to run startvideo.sh. Requires omxplayer, pqiv, fbi and chromium.
+Requires cvlc, pqiv, fbi and chromium.
 
 3: Added auxiliary script WegPageToImage whick can be used to take a screenshots of web pages.
 ```
