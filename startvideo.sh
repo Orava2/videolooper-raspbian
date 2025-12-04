@@ -3,8 +3,9 @@
 # Comments, clean up, improvements by Derek DeMoss, for Dark Horse Comics, Inc. 2015
 # Added USB support, full path, support files with spaces in names, support more file formats - Tim Schwartz, 2016
 
-# Requires: omxplayer, fbi, pqiv
+# Requires: cvlc, fbi, pqiv
 
+# Version 0.3.5, omxplayer is replaced with cvlv. CHROME_USER removed.
 # Version 0.3.4, new chromium cannot be run as root. variable CHROME_USER sets user which is used to run chromium.
 # Version 0.3.4, remember position of PLAYING index after restart, added subtitles.
 # Version 0.3.3, fix: removed -r parameter from omxplayer.
@@ -17,12 +18,12 @@
 
 declare -A VIDS # make variable VIDS an Array
 
-LOCAL_FILES=/var/www/html/files/ # A variable of this folder
+LOCAL_FILES=/home/pi/videolooper-raspbian/files/ # A variable of this folder
 USB_FILES=/mnt/usbdisk/ # Variable for usb mount point
 VIDEO_FORMATS='mov|mp4|mpg|mkv'  # If you want o exclude files rename files eg to video.mp4.x
 IMAGE_FORMATS='png|jpg|bmp|gif'
 WEB_FORMATS='html|htm|php'
-CHROME_USER=pi # User which is used to run Chromium browser
+# CHROME_USER=pi # User which is used to run Chromium browser
 DEFAULT_DELAY=15 # Defaul delay for images and html pages
 RESTORE_POS=0 # Set to 1 if you want script to remember playing position after restart.
 
@@ -54,9 +55,9 @@ if [ -d "$USB_FILES" ]; then
 fi
 }
 
-VID_SERVICE='omxplayer' # The program to play the videos
+VID_SERVICE='cvlc' # The program to play the videos
 IMG_SERVICE='fbi' # The program to display images
-WEB_SERVICE='chromium-browse' # In process list last r character is not displayed.
+WEB_SERVICE='chromium' # In process list last r character is not displayed.
 
 # Let's move to the scipt's directory. This is needed if script is called from crontab etc.
 # Absolute path this script is in, like /home/user/bin (no / at the end)
@@ -118,7 +119,7 @@ while true; do # Main loop for displaying videos, images and web pages.
 			# Videos
 			if echo "${FILENAME##*.}" | grep -Eiq ${VIDEO_FORMATS} > /dev/null;  then
 				echo "Playing video file ${VIDS[$PLAYING]}"
-				omxplayer -o hdmi -t 0 --align center ${VIDS[$PLAYING]} > /dev/null # Play video
+				cvlc --fullscreen --play-and-exit --no-video-title-show ${VIDS[$PLAYING]} > /dev/null # Play video
 				#xrefresh -display :0 
 
 			fi
@@ -132,7 +133,8 @@ while true; do # Main loop for displaying videos, images and web pages.
         				DELAY=${DEFAULT_DELAY}	# If not number found use default delay.
 				fi
 				echo "Opening web page ${VIDS[$PLAYING]}"
-				sudo -H -u $CHROME_USER DISPLAY=:0 chromium-browser --noerrdialogs --disable-session-crashed-bubble --disable-infobars --kiosk --incognito ${VIDS[$PLAYING]} > /dev/null & # Open web page in Chromium by using kiosk mode.
+				#sudo -H -u $CHROME_USER DISPLAY=:0 chromium-browser --noerrdialogs --disable-session-crashed-bubble --disable-infobars --kiosk --incognito ${VIDS[$PLAYING]} > /dev/null & # Open web page in Chromium by using kiosk mode.
+				chromium-browser --allow-running-insecure-content --noerrdialogs --disable-session-crashed-bubble --disable-infobars --kiosk --disable-translate --disable-features=TranslateUI,LanguageDetection --lang=en --incognito ${VIDS[$PLAYING]} > /dev/null & # Open web page in Chromium by using kiosk mode.
 				sleep ${DELAY} # Wait for defay
 				pkill -9 "$WEB_SERVICE" # Kill Chromium process.
 			fi
